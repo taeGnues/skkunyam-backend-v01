@@ -18,9 +18,18 @@ public enum BaseResponseStatus {
     CAFETERIA_OPEN_SUCCESS(true, HttpStatus.ACCEPTED.value(), "가게가 열렸습니다."),
     CAFETERIA_CLOSE_SUCCESS(true, HttpStatus.ACCEPTED.value(), "가게가 닫혔습니다."),
     CAFETERIA_UPDATE_SUCCESS(true, HttpStatus.ACCEPTED.value(), "가게 정보가 수정됐습니다."),
+    CAFETERIA_FOUND_SUCCESS(true,HttpStatus.OK.value(),"가게 정보를 조회했습니다."),
 
     // Menu 관련
     MENU_REGISTER_SUCCESS(true, HttpStatus.CREATED.value(), "해당 메뉴가 등록됐습니다."),
+    MENU_UPDATE_SUCCESS(true, HttpStatus.OK.value(), "해당 메뉴가 수정됐습니다."),
+    MENU_DELETE_SUCCESS(true, HttpStatus.OK.value(), "해당 메뉴가 삭제됐습니다."),
+    MENUS_GET_SUCCESS(true, HttpStatus.OK.value(), "해당 식당의 메뉴들을 조회했습니다."),
+    MENU_DETAIL_GET_SUCCESS(true, HttpStatus.OK.value(), "해당 식당 메뉴의 상세 정보를 조회했습니다."),
+    MENU_TODAY_GET_SUCCESS(true, HttpStatus.OK.value(), "오늘의 추천 메뉴를 조회했습니다."),
+    MENU_SOLDOUT_SUCCESS(true, HttpStatus.OK.value(), "해당 메뉴를 품절 상태로 변경했습니다."),
+    MENU_ONSALE_SUCCESS(true, HttpStatus.OK.value(), "해당 메뉴를 판매중 상태로 변경했습니다."),
+
 
     // Order 관련
     ORDER_POST_SUCCESS(true, HttpStatus.CREATED.value(), "해당 PRE_WAITING 상태인 주문이 등록됐습니다."),
@@ -35,9 +44,19 @@ public enum BaseResponseStatus {
 
     // Order 관련
     ORDER_MENU_COUNT_LACK(false,HttpStatus.BAD_REQUEST.value(),"최소 1개 이상의 상품을 선택해야합니다."),
+    ORDER_NOT_FOUND(false,HttpStatus.NOT_FOUND.value(),"해당 orderId를 가진 주문이 존재하지 않습니다."),
+    ORDER_REGISTERED_EMPTY_BY_STATUS(false,HttpStatus.NOT_FOUND.value(),"해당 주문 상태를 가진 등록된 주문이 존재하지 않습니다."),
+    ORDER_REGISTERED_EMPTY(false,HttpStatus.NOT_FOUND.value(),"해당 가게의 등록된 주문이 존재하지 않습니다."),
 
     // Cafeteria 관련
     CAFETERIA_NOT_FOUND(false,HttpStatus.NOT_FOUND.value(),"해당 cafeteriaId를 가진 식당이 존재하지 않습니다."),
+    CAFETERIA_REGISTERED_EMPTY(false,HttpStatus.NOT_FOUND.value(),"등록된 식당이 존재하지 않습니다."),
+
+    // Menu 관련
+    MENU_NOT_FOUND(false,HttpStatus.NOT_FOUND.value(),"해당 menuId를 가진 식당이 존재하지 않습니다."),
+    MENU_REGISTERED_EMPTY(false,HttpStatus.NOT_FOUND.value(),"해당 식당에 등록된 메뉴가 없습니다."),
+    TODAY_MENU_NOT_FOUND(false, HttpStatus.NOT_FOUND.value(), "현재 열려있는 식당이 없거나 열려있는 식당들 중 등록된 메뉴가 없습니다."),
+
 
     RESPONSE_ERROR(false, HttpStatus.NOT_FOUND.value(), "값을 불러오는데 실패하였습니다."),
 
@@ -66,6 +85,7 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_MEMO(false,HttpStatus.INTERNAL_SERVER_ERROR.value(),"메모 수정 실패"),
 
     UNEXPECTED_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상치 못한 에러가 발생했습니다.");
+
 
 
     private final boolean isSuccess;

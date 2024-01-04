@@ -47,6 +47,7 @@ public class OrderMenu {
         if(count<1){
             throw new OrderMenuCountLackException();
         }
+
     }
 
     public OrderGetResDTO.OrderGetMenuItem toOrderGetMenuItem() {

@@ -1,5 +1,6 @@
 package com.skkudteam3.skkusirenorder.src.entity;
 
+import com.skkudteam3.skkusirenorder.src.dto.MenuDetailGetResDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,4 +32,11 @@ public class MenuOptionGroup {
         this.menuOptionDetails = menuOptionDetails;
     }
 
+    public MenuDetailGetResDTO.MenuOptionGroupDTO toMenuOptionGroupDTO() {
+        return new MenuDetailGetResDTO.MenuOptionGroupDTO(
+                name,
+                isEssentialOption,
+                menuOptionDetails.stream().map(MenuOptionDetail::toMenuOptionDetailDTO).toList()
+        );
+    }
 }

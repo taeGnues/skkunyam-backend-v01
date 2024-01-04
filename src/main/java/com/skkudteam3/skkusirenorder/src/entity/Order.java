@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -94,6 +95,10 @@ public class Order {
         }
         this.orderNumber = makeOrderNumber();
         changeOrderStatus(OrderStatus.PRE_WAITING);
+
+        for (OrderMenu orderMenu : orderMenus) { // 판매량 증가
+            orderMenu.getMenu().increaseSale();
+        }
     }
 
     private String makeOrderNumber(){
@@ -136,6 +141,18 @@ public class Order {
     public int calculateTotalPrice(){
         this.totalPrice = orderMenus.stream().mapToInt(OrderMenu::calculateMoney).sum();
         return totalPrice;
+    }
+
+    public Boolean isToday(){
+        LocalDate today = LocalDate.now(); // 오늘 날짜
+        LocalDateTime startOfDay = today.atStartOfDay(); // 오늘의 시작 시간 (자정)
+        LocalDateTime endOfDay = today.atTime(23, 59, 59); // 오늘의 마지막 시간 (23:59:59)
+
+        if(createdAt.isAfter(startOfDay) && createdAt.isBefore(endOfDay)){
+            return true;
+        }
+
+        return false;
     }
 
 

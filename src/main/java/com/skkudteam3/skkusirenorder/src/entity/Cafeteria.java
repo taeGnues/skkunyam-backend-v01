@@ -1,5 +1,7 @@
 package com.skkudteam3.skkusirenorder.src.entity;
 
+import com.skkudteam3.skkusirenorder.src.dto.CafeteriaDetailGetResDTO;
+import com.skkudteam3.skkusirenorder.src.dto.CafeteriaGetResDTO;
 import com.skkudteam3.skkusirenorder.src.dto.CafeteriaPatchReqDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -110,4 +113,36 @@ public class Cafeteria {
     public int hashCode() {
         return Objects.hash(id, description, name, location, isCafeteriaOpen, closeTime, openTime, weekDays, campus, mapImagePath, contact, email, cafeteriaImages, menus, orders);
     }
+
+    public CafeteriaGetResDTO toCafeteriaGetResDTO(){
+        return new CafeteriaGetResDTO(
+                id,
+                name,
+                location,
+                description,
+                contact,
+                weekDays,
+                openTime,
+                closeTime
+        );
+    }
+
+    public CafeteriaDetailGetResDTO toCafeteriaDetailGetResDTO(){
+        List<String> cafeteriaImagePaths = cafeteriaImages.stream().map(CafeteriaImage::getCafeteriaImagePath).collect(Collectors.toList());
+
+        return new CafeteriaDetailGetResDTO(
+                id,
+                name,
+                location,
+                description,
+                contact,
+                mapImagePath,
+                weekDays,
+                openTime,
+                closeTime,
+                cafeteriaImagePaths
+        );
+    }
+
+
 }

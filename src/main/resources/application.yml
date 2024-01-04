@@ -4,7 +4,7 @@ spring:
       dev: common, dev
       prod: common, prod
 ---
-spring:
+spring: # 공통
   session:
     store-type: jdbc
   config:
@@ -49,7 +49,7 @@ jwt:
   secret-key: UwKYibQQgkW7g-*k.ap9kje-wxBHb9wdXoBT4vnt4P3sJWt-Nu  # JWT key. 서버에서 쓰는 비밀키 (비대칭 암호화)
 
 ---
-spring:
+spring: # 배포용 프로필
   config:
     activate:
       on-profile: "prod"
@@ -72,7 +72,7 @@ spring:
       hibernate:
         format_sql: false
 ---
-spring:
+spring: # 개발용 프로필
   config:
     activate:
       on-profile: "dev"

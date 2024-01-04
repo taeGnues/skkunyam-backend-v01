@@ -214,7 +214,7 @@ public class FindAllOrderByOrderStatusTest {
     public void findAllOrderByOrderStatus_default() throws Exception{
 
         //when
-        orderRepository.findAllOrderByOrderStatus(OrderStatus.WAITING)
+        orderRepository.findAllOrderByOrderStatus(1L, OrderStatus.WAITING)
                 .forEach(e-> System.out.println(e.getOrderNumber() + " : " + e.getOrderStatus()));
 
     }

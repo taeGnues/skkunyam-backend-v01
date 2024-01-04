@@ -217,7 +217,7 @@ public class FindOrdersByStatusTest {
     public void findOrdersByStatusTest_default() throws Exception{
 
         //when
-        List<OrderGetResDTO> orderGetResDTOs = orderService.findOrdersByStatus(OrderStatus.WAITING);
+        List<OrderGetResDTO> orderGetResDTOs = orderService.findOrdersByStatus(1L, OrderStatus.WAITING);
 
 
         //then

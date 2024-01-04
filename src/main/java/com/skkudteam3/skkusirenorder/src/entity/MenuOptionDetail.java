@@ -1,5 +1,6 @@
 package com.skkudteam3.skkusirenorder.src.entity;
 
+import com.skkudteam3.skkusirenorder.src.dto.MenuDetailGetResDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,5 +21,9 @@ public class MenuOptionDetail {
     public MenuOptionDetail(String name, int price) {
         this.name = name;
         this.price = price;
+    }
+
+    public MenuDetailGetResDTO.MenuOptionDetailDTO toMenuOptionDetailDTO() {
+        return new MenuDetailGetResDTO.MenuOptionDetailDTO(name, price);
     }
 }

@@ -16,7 +16,7 @@ public class MenuImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String menuImageUrl;
+    private String menuImagePath;
 
 
 }

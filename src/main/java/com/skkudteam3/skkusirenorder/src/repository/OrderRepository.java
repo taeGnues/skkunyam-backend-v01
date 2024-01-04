@@ -1,5 +1,7 @@
 package com.skkudteam3.skkusirenorder.src.repository;
 
+import com.skkudteam3.skkusirenorder.common.exceptions.OrderEmptyByStatusException;
+import com.skkudteam3.skkusirenorder.common.exceptions.OrderEmptyException;
 import com.skkudteam3.skkusirenorder.src.entity.Order;
 import com.skkudteam3.skkusirenorder.src.entity.OrderStatus;
 import jakarta.persistence.EntityManager;
@@ -23,12 +25,32 @@ public class OrderRepository {
         em.persist(order); // cascade_all
     }
 
-    public List<Order> findAllOrderByOrderStatus(OrderStatus orderStatus){
-        return em.createQuery("select o " +
+    public List<Order> findAllOrderByOrderStatus(Long cafeteriaId, OrderStatus orderStatus){
+        return Optional.ofNullable(em.createQuery("select o " +
                         "from Order o " +
-                        "where o.orderStatus=:orderStatus", Order.class)
+                        "join fetch o.cafeteria c " +
+                        "where o.orderStatus=:orderStatus and c.id=:cafeteriaId", Order.class)
                 .setParameter("orderStatus", orderStatus) // 바인딩
-                .getResultList();
+                .setParameter("cafeteriaId", cafeteriaId) // 바인딩
+                .getResultList()).orElseThrow(OrderEmptyByStatusException::new);
     }
 
+    public Long findTotalOrderCounts(Long cafeteriaId){
+
+        return Optional.ofNullable((Long) em.createQuery("select count(o) from Order o " +
+                "join fetch o.cafeteria c " +
+                "where c.id=:cafeteriaId").getSingleResult()).orElseThrow(OrderEmptyException::new);
+    }
+
+    public Long findTakeOutCounts(Long cafeteriaId){
+        return Optional.ofNullable((Long) em.createQuery("select count(o) from Order o " +
+                "join fetch o.cafeteria c " +
+                "where c.id=:cafeteriaId and o.isTakeOut=true").getSingleResult()).orElseThrow(OrderEmptyException::new);
+    }
+
+    public Long findDineInCounts(Long cafeteriaId){
+        return Optional.ofNullable((Long) em.createQuery("select count(o) from Order o " +
+                "join fetch o.cafeteria c " +
+                "where c.id=:cafeteriaId and o.isTakeOut=false").getSingleResult()).orElseThrow(OrderEmptyException::new);
+    }
 }

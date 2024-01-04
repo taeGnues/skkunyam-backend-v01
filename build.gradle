@@ -41,7 +41,7 @@ dependencies {
 	runtimeOnly("com.mysql:mysql-connector-j")
 	// 테스트용 h2db
 	runtimeOnly ('com.h2database:h2')
-	//runtimeOnly 'mysql:mysql-connector-java:5.1.47' //mysql5
+//	runtimeOnly 'mysql:mysql-connector-java:5.1.47' //mysql5
 	implementation ('org.springframework.boot:spring-boot-starter-jdbc')
 	implementation ('org.springframework.boot:spring-boot-starter-data-jpa')
 

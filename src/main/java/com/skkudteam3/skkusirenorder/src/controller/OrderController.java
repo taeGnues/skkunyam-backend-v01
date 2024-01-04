@@ -6,7 +6,6 @@ import com.skkudteam3.skkusirenorder.src.dto.*;
 import com.skkudteam3.skkusirenorder.src.entity.OrderStatus;
 import com.skkudteam3.skkusirenorder.src.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,14 +29,14 @@ public class OrderController {
         return new BaseResponse<>(BaseResponseStatus.ORDER_POST_SUCCESS, result);
     }
 
-    /* [GET] /order/waiting
+    /* [GET] /order/pre-waiting
     STAFF
-    => STAFF 쪽에서 결제까지 성공한 주문목록들을 확인하는 API (접수 대기중인 주문 확인) OrderStatus = "WAITING"
+    => STAFF 쪽에서 결제까지 성공한 주문목록들을 확인하는 API (접수 대기중인 주문 확인) OrderStatus = "PRE-WAITING"
      */
 
-    @GetMapping("/prewaiting")
-    public BaseResponse<List<OrderGetResDTO>> readOrderPreWaiting(){
-        List<OrderGetResDTO> result = orderService.findOrdersByStatus(OrderStatus.PRE_WAITING);
+    @GetMapping("/pre-waiting/{cafeteriaId}")
+    public BaseResponse<List<OrderGetResDTO>> readOrderPreWaiting(@PathVariable Long cafeteriaId){
+        List<OrderGetResDTO> result = orderService.findOrdersByStatus(cafeteriaId, OrderStatus.PRE_WAITING);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
     }
 
@@ -61,9 +60,9 @@ public class OrderController {
     => STAFF 쪽에서 결제까지 성공한 주문목록들을 확인하는 API (접수 대기중인 주문 확인) OrderStatus = "WAITING"
      */
 
-    @GetMapping("/waiting")
-    public BaseResponse<List<OrderGetResDTO>> readOrderWaiting(){
-        List<OrderGetResDTO> result = orderService.findOrdersByStatus(OrderStatus.WAITING);
+    @GetMapping("/waiting/{cafeteriaId}")
+    public BaseResponse<List<OrderGetResDTO>> readOrderWaiting(@PathVariable Long cafeteriaId){
+        List<OrderGetResDTO> result = orderService.findOrdersByStatus(cafeteriaId, OrderStatus.WAITING);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
     }
 
@@ -85,9 +84,9 @@ public class OrderController {
     => STAFF 쪽에서 승인한 주문목록들을 확인하는 API (접수 후 진행중인 주문 확인) OrderStatus = "PROCEEDING"
      */
 
-    @GetMapping("/proceeding")
-    public BaseResponse<List<OrderGetResDTO>> readOrderProceeding(){
-        List<OrderGetResDTO> result = orderService.findOrdersByStatus(OrderStatus.PROCEEDING);
+    @GetMapping("/proceeding/{cafeteriaId}")
+    public BaseResponse<List<OrderGetResDTO>> readOrderProceeding(@PathVariable Long cafeteriaId){
+        List<OrderGetResDTO> result = orderService.findOrdersByStatus(cafeteriaId, OrderStatus.PROCEEDING);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
     }
 
@@ -110,9 +109,9 @@ public class OrderController {
     => STAFF 쪽에서 완료된 주문을 확인하는 API
      */
 
-    @GetMapping("/complete")
-    public BaseResponse<List<OrderGetResDTO>> readOrderComplete(){
-        List<OrderGetResDTO> result = orderService.findOrdersByStatus(OrderStatus.COMPLETE);
+    @GetMapping("/complete/{cafeteriaId}")
+    public BaseResponse<List<OrderGetResDTO>> readOrderComplete(@PathVariable Long cafeteriaId){
+        List<OrderGetResDTO> result = orderService.findOrdersByStatus(cafeteriaId, OrderStatus.COMPLETE);
         return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
     }
 
@@ -131,48 +130,87 @@ public class OrderController {
         =========================================== 통계용 =========================================================
      */
 
-    /* [GET] /order/count-waiting
+    /* [GET] /order/count-waiting/{cafeteriaId}
         STAFF
         => 오늘 받은 주문의 개수와 총 받은 개수 확인
      */
+    @GetMapping("/count-waiting/{cafeteriaId}")
+    public BaseResponse<Integer> countWaiting(@PathVariable Long cafeteriaId){
+        int result = orderService.countOrdersByStatus(cafeteriaId, OrderStatus.WAITING);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /* [GET] /order/today/count-proceeding
+    /* [GET] /order/today/count-proceeding/{cafeteriaId}
         STAFF
         => 오늘 밀린 주문의 개수 확인
      */
+    @GetMapping("/today/count-proceeding/{cafeteriaId}")
+    public BaseResponse<Integer> countProceedingToday(@PathVariable Long cafeteriaId){
+        int result = orderService.countTodayOrdersByStatus(cafeteriaId, OrderStatus.PROCEEDING);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /*  [GET] /order/today/count-completed
+    /*  [GET] /order/today/count-completed/{cafeteriaId}
         STAFF
         => 오늘 처리한 주문의 개수 확인 (=판매량)
      */
+    @GetMapping("/today/count-completed/{cafeteriaId}")
+    public BaseResponse<Integer> countCompletedToday(@PathVariable Long cafeteriaId){
+        int result = orderService.countTodayOrdersByStatus(cafeteriaId, OrderStatus.COMPLETE);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /*  [GET] /order/today/count-completed
-        STAFF
-        => 오늘 처리한 주문의 개수 확인
-     */
-
-    /*  [GET] /order/today/revenue
+    /*  [GET] /order/today/revenue/{cafeteriaId}
         STAFF
         => 오늘 수익금 확인
      */
+    @GetMapping("/today/revenue/{cafeteriaId}")
+    public BaseResponse<Integer> readRevenueToday(@PathVariable Long cafeteriaId){
+        int result = orderService.readRevenueToday(cafeteriaId);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /*  [GET] /order/revenue
+    /*  [GET] /order/revenue/{cafeteriaId}
         STAFF
         => 전체 총 매출 확인
      */
+    @GetMapping("/revenue/{cafeteriaId}")
+    public BaseResponse<Integer> readRevenueTotal(@PathVariable Long cafeteriaId){
+        int result = orderService.readRevenueTotal(cafeteriaId);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /*  [GET] /order/today/best-menus
+
+    /*  [GET] /order/today/best-menus/{cafeteriaId}
         STAFF
         => 오늘 판매량 메뉴 1등부터 4등까지 리턴
      */
+    @GetMapping("/today/best-menus/{cafeteriaId}")
+    public BaseResponse<List<String>> readBestMenusToday(@PathVariable Long cafeteriaId){
+        List<String> result = orderService.readBestMenusToday(cafeteriaId);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /*  [GET] /order/takeout-check
+
+    /*  [GET] /order/takeout-check/{cafeteriaId}
         STAFF
-        => 포장 손님 비율, 비포장 손님 비율 리턴
+        => 포장 손님, 비포장 손님 수 리턴
      */
+    @GetMapping("/takeout-check/{cafeteriaId}")
+    public BaseResponse<TakeOutCheckGetResDTO> readTakeOut(@PathVariable Long cafeteriaId){
+        TakeOutCheckGetResDTO result = orderService.readTakeOut(cafeteriaId);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 
-    /*  [GET] /order/revenue-average
+    // TODO: 하루 평균 판매 금액 의미 확인하기.
+
+    /*  [GET] /order/revenue-average/{cafeteriaId}
         STAFF
         => 하루 평균 판매 금액 리턴
      */
+    @GetMapping("/revenue-average/{cafeteriaId}")
+    public BaseResponse<Long> readRevenueAverage(@PathVariable Long cafeteriaId){
+        Long result = orderService.readRevenueAverage(cafeteriaId);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS, result);
+    }
 }

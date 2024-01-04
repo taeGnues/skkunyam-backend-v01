@@ -1,5 +1,6 @@
 package com.skkudteam3.skkusirenorder.src.service;
 
+import com.skkudteam3.skkusirenorder.common.exceptions.OrderNotFoundException;
 import com.skkudteam3.skkusirenorder.src.dto.*;
 import com.skkudteam3.skkusirenorder.src.entity.*;
 import com.skkudteam3.skkusirenorder.src.repository.CafeteriaRepository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,15 +60,15 @@ public class OrderService {
      */
     @Transactional
     public void payOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.payed();
     }
 
     /*
-        상태별 주문 확인 PRE_WAITING, WAITING, PROCEEDING, COMPLETE, CANCEL
+        해당 식당의 상태별 주문 확인 PRE_WAITING, WAITING, PROCEEDING, COMPLETE, CANCEL
      */
-    public List<OrderGetResDTO> findOrdersByStatus(OrderStatus orderStatus){
-        List<Order> orders = orderRepository.findAllOrderByOrderStatus(orderStatus);
+    public List<OrderGetResDTO> findOrdersByStatus(Long cafeteriaId, OrderStatus orderStatus){
+        List<Order> orders = orderRepository.findAllOrderByOrderStatus(cafeteriaId, orderStatus);
         return orders.stream().map(Order::toOrderGetResDTO).toList();
     }
 
@@ -80,7 +82,7 @@ public class OrderService {
         Long orderId = orderPatchReqDTO.orderId;
         int estimatedTime = orderPatchReqDTO.estimatedTime;
 
-        Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.accepted(estimatedTime);
     }
 
@@ -90,7 +92,7 @@ public class OrderService {
      */
     @Transactional
     public void completeOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.completed();
 
     }
@@ -102,7 +104,7 @@ public class OrderService {
      */
     @Transactional
     public void denyOrder(OrderDenyReqDTO orderDenyReqDTO) {
-        Order order = orderRepository.findById(orderDenyReqDTO.getOrderId()).orElseThrow(IllegalArgumentException::new);
+        Order order = orderRepository.findById(orderDenyReqDTO.getOrderId()).orElseThrow(OrderNotFoundException::new);
         order.denied(orderDenyReqDTO.getOrderCancellationMessage());
     }
 
@@ -112,8 +114,70 @@ public class OrderService {
      */
     @Transactional
     public void denyTransaction(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.denied("미승인된 거래입니다.");
     }
 
+    /*
+        전체 상태별 주문 건수 확인 PRE_WAITING, WAITING, PROCEEDING, COMPLETE, CANCEL
+     */
+    public int countOrdersByStatus(Long cafeteriaId, OrderStatus orderStatus){
+        return orderRepository.findAllOrderByOrderStatus(cafeteriaId, orderStatus).size();
+    }
+
+    /*
+        오늘 상태별 주문 건수 확인 PRE_WAITING, WAITING, PROCEEDING, COMPLETE, CANCEL
+     */
+    public int countTodayOrdersByStatus(Long cafeteriaId, OrderStatus orderStatus) {
+        List<Order> orders = orderRepository.findAllOrderByOrderStatus(cafeteriaId, orderStatus);
+
+        return (int) orders.stream().filter(Order::isToday).count();
+    }
+
+    /*
+        오늘 수익금 확인
+     */
+    public int readRevenueToday(Long cafeteriaId) {
+        List<Order> orders = orderRepository.findAllOrderByOrderStatus(cafeteriaId, OrderStatus.COMPLETE);
+
+        return orders.stream().filter(Order::isToday).mapToInt(Order::getTotalPrice).sum();
+
+    }
+
+    /*
+        총 수익금 확인
+     */
+    public int readRevenueTotal(Long cafeteriaId) {
+        List<Order> orders = orderRepository.findAllOrderByOrderStatus(cafeteriaId, OrderStatus.COMPLETE);
+
+        return orders.stream().mapToInt(Order::getTotalPrice).sum();
+
+    }
+
+    /*
+        판매량 상위 5개 메뉴 조회
+     */
+    public List<String> readBestMenusToday(Long cafeteriaId) {
+        List<Menu> menus = menuRepository.findTopFiveMenus(cafeteriaId);
+        return menus.stream().map(Menu::getMenuName).collect(Collectors.toList());
+    }
+
+    /*
+        포장/비포장 고객 수 조회
+     */
+    public TakeOutCheckGetResDTO readTakeOut(Long cafeteriaId) {
+
+        Long takeOut = orderRepository.findTakeOutCounts(cafeteriaId);
+        Long dineIn = orderRepository.findDineInCounts(cafeteriaId);
+
+        return new TakeOutCheckGetResDTO(takeOut, dineIn);
+    }
+
+    /*
+        하루 평균 수익금 조회
+     */
+    public Long readRevenueAverage(Long cafeteriaId) {
+
+        return 0L;
+    }
 }

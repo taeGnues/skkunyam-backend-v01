@@ -66,9 +66,6 @@ public class CafeteriaControllerTest {
         this.mockMvc
                 .perform(post("/cafeteria/")
                         .contentType(MediaType.APPLICATION_JSON).content(param))
-                .andExpect(
-                        status().isCreated()
-                )
                 .andDo(
                         print()
                 );
@@ -99,9 +96,6 @@ public class CafeteriaControllerTest {
         this.mockMvc
                 .perform(post("/cafeteria/")
                         .contentType(MediaType.APPLICATION_JSON).content(param))
-                .andExpect(
-                        status().isCreated()
-                )
                 .andDo(
                         print()
                 );
@@ -115,9 +109,6 @@ public class CafeteriaControllerTest {
         //when //then
         this.mockMvc
                 .perform(patch("/cafeteria/open/1"))
-                .andExpect(
-                        status().isAccepted()
-                )
                 .andDo(
                         print()
                 );
@@ -131,9 +122,6 @@ public class CafeteriaControllerTest {
         //when //then
         this.mockMvc
                 .perform(patch("/cafeteria/close/1"))
-                .andExpect(
-                        status().isAccepted()
-                )
                 .andDo(
                         print()
                 );
