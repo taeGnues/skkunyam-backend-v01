@@ -36,7 +36,7 @@ public class Menu {
     @JoinColumn(name = "menu_id")
     private List<MenuOptionGroup> menuOptionGroups = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "menu_image_id")
     private MenuImage menuImage;
 

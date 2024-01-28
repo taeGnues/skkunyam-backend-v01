@@ -101,6 +101,11 @@ public class Cafeteria {
         menu.setCafeteria(this);
     }
 
+    public void addCafeteriaImage(CafeteriaImage cafeteriaImage){
+        cafeteriaImages.add(cafeteriaImage);
+        cafeteriaImage.setCafeteria(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

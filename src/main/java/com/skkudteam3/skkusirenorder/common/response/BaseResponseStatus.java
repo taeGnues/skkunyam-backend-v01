@@ -51,12 +51,14 @@ public enum BaseResponseStatus {
     // Cafeteria 관련
     CAFETERIA_NOT_FOUND(false,HttpStatus.NOT_FOUND.value(),"해당 cafeteriaId를 가진 식당이 존재하지 않습니다."),
     CAFETERIA_REGISTERED_EMPTY(false,HttpStatus.NOT_FOUND.value(),"등록된 식당이 존재하지 않습니다."),
+    CAFETERIA_IMAGES_SAVE_FAILED(false,HttpStatus.NOT_ACCEPTABLE.value(), "식당 이미지 저장에 실패했습니다."),
+    CAFETERIA_WRONG_IMAGE_URL(false,HttpStatus.BAD_REQUEST.value(),"해당 URL은 잘못된 경로입니다."),
 
     // Menu 관련
-    MENU_NOT_FOUND(false,HttpStatus.NOT_FOUND.value(),"해당 menuId를 가진 식당이 존재하지 않습니다."),
+    MENU_NOT_FOUND(false,HttpStatus.NOT_FOUND.value(),"해당 menuId를 가진 메뉴가 존재하지 않습니다."),
     MENU_REGISTERED_EMPTY(false,HttpStatus.NOT_FOUND.value(),"해당 식당에 등록된 메뉴가 없습니다."),
     TODAY_MENU_NOT_FOUND(false, HttpStatus.NOT_FOUND.value(), "현재 열려있는 식당이 없거나 열려있는 식당들 중 등록된 메뉴가 없습니다."),
-
+    MENU_WRONG_IMAGE_URL(false,HttpStatus.BAD_REQUEST.value(),"해당 URL은 잘못된 경로입니다."),
 
     RESPONSE_ERROR(false, HttpStatus.NOT_FOUND.value(), "값을 불러오는데 실패하였습니다."),
 

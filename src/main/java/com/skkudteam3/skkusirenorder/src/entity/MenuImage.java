@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,7 +18,14 @@ public class MenuImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String originalImageName;
     private String menuImagePath;
 
+    private LocalDateTime createdAt;
 
+    public MenuImage(String originalImageName, String menuImagePath) {
+        this.originalImageName = originalImageName;
+        this.menuImagePath = menuImagePath;
+        this.createdAt = LocalDateTime.now();
+    }
 }

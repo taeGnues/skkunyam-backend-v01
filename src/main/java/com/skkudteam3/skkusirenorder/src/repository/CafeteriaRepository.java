@@ -26,7 +26,6 @@ public class CafeteriaRepository {
 
     public Optional<Cafeteria> findDetailById(Long cafeteriaId) {
         return Optional.ofNullable(em.createQuery("select c from Cafeteria c" +
-                        " join fetch c.cafeteriaImages" +
                         " where c.id = :cafeteriaId", Cafeteria.class)
                 .setParameter("cafeteriaId", cafeteriaId)
                 .getSingleResult());
